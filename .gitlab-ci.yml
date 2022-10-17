@@ -6,7 +6,7 @@ junit:
 generate_artifacts:
   stage: deploy
   script:
-    - mvn -B clean package
+    - mvn -B clean package -DskipTests
   artifacts:
     paths:
       - target/journey*.jar
