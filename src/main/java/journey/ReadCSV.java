@@ -6,8 +6,7 @@ import journey.repository.StationDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -22,14 +21,17 @@ public class ReadCSV {
      */
     public static void readStations() {
         FileReader file = null;
+        BufferedReader br = null;
         try {
-            file = new FileReader("src/main/resources/EV_Roam_charging_stations.csv");
-        } catch (FileNotFoundException e) {
+            InputStream is = ReadCSV.class.getResourceAsStream("/EV_Roam_charging_stations.csv");
+            InputStreamReader isr = new InputStreamReader(is);
+            br = new BufferedReader(isr);
+        } catch (Exception e) {
             log.error(e);
         }
 
-        assert file != null;
-        List<Station> beans = new CsvToBeanBuilder<Station>(file)
+        assert br != null;
+        List<Station> beans = new CsvToBeanBuilder<Station>(br)
             .withType(Station.class)
             .build()
             .parse();
