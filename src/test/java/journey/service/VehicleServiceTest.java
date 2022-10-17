@@ -1,6 +1,8 @@
 package journey.service;
 
+import org.junit.jupiter.api.BeforeAll;
 import journey.data.Vehicle;
+import journey.repository.DatabaseManager;
 import journey.repository.VehicleDAO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +11,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class VehicleServiceTest {
-
+    @BeforeAll
+    public static void resetDb() throws Exception {
+        DatabaseManager databaseManager = DatabaseManager.initialiseWithUrl("/test.db");
+    }
     @Test
     void regValidOne() {
         String error = VehicleService.regValid("", null);

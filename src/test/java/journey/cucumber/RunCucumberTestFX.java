@@ -3,6 +3,7 @@ package journey.cucumber;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterAll;
 import io.cucumber.java.Before;
+import io.cucumber.java.BeforeAll;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -12,6 +13,7 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import journey.controller.LoginController;
 import journey.gui.MainWindow;
+import journey.repository.DatabaseManager;
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;
 import org.junit.platform.suite.api.SelectClasspathResource;
@@ -35,7 +37,10 @@ public class RunCucumberTestFX extends ApplicationTest {
     public void setUpClass() throws Exception {
         ApplicationTest.launch(MainWindow.class);
     }
-
+    @BeforeAll
+    public static void resetDb() throws Exception {
+        DatabaseManager databaseManager = DatabaseManager.initialiseWithUrl("/test.db");
+    }
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));

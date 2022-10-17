@@ -22,7 +22,7 @@ class NoteDAOTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        DatabaseManager databaseManager = DatabaseManager.getInstance();
+        DatabaseManager databaseManager = DatabaseManager.initialiseWithUrl("/test.db");
         conn = databaseManager.connect();
         stationDAO = new StationDAO();
         noteDAO = new NoteDAO();

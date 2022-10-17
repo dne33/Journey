@@ -17,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class StationDAOTest {
     static StationDAO stationDAO;
     static DatabaseManager databaseManager;
-    Connection conn;
+    static Connection conn;
     User user;
 
     @BeforeAll
     static void initialise() {
-        databaseManager = DatabaseManager.initialiseWithUrl("src/test/resources/test.db");
+        databaseManager = DatabaseManager.getInstance();
         stationDAO = new StationDAO();
     }
 

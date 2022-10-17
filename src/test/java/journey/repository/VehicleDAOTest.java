@@ -21,7 +21,7 @@ class VehicleDAOTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        DatabaseManager databaseManager = DatabaseManager.getInstance();
+        DatabaseManager databaseManager = DatabaseManager.initialiseWithUrl("/test.db");
         conn = databaseManager.connect();
         vehicleDAO = new VehicleDAO();
         userDAO = new UserDAO();

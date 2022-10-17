@@ -34,7 +34,7 @@ public class LoginStepDefs extends TestFXBase {
     public void setUpClass() throws Exception {
         Connection conn = null;
         try {
-            conn = DatabaseManager.getInstance().connect();
+            conn = DatabaseManager.initialiseWithUrl("/test.db").connect();
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM Users WHERE name = 'uniqueUsername'")) {
                 ps.execute();
             }

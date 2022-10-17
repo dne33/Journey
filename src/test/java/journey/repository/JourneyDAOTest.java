@@ -27,7 +27,7 @@ class JourneyDAOTest {
 
     @BeforeAll
     static void initialise() {
-        databaseManager = DatabaseManager.getInstance();
+        databaseManager = DatabaseManager.initialiseWithUrl("/test.db");
         journeyDAO = new JourneyDAO();
         vehicleDAO = new VehicleDAO();
         userDAO = new UserDAO();

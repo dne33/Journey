@@ -20,7 +20,7 @@ class UserDAOTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        DatabaseManager databaseManager = DatabaseManager.getInstance();
+        DatabaseManager databaseManager = DatabaseManager.initialiseWithUrl("/test.db");
         conn = databaseManager.connect();
         userDAO = new UserDAO();
         Statement s = conn.createStatement();

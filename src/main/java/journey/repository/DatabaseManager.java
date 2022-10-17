@@ -1,6 +1,9 @@
 package journey.repository;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -10,6 +13,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
+
 import journey.ReadCSV;
 import journey.Utils;
 import org.apache.logging.log4j.LogManager;
@@ -117,19 +122,23 @@ public final class DatabaseManager {
         // Note: Order of stations in a journey is done by a 'order' column.
         Connection conn = null;
         try {
-            String setupSQL = Files.readString(Path.of("src/main/resources/sql/init_db.sql"));
-            String[] statements = setupSQL.split("--Break");
-            conn = connect();
-            assert (conn != null);
-            try (Statement statement = conn.createStatement()) {
-                for (String line : statements) {
-                    statement.addBatch(line);
+            InputStream file = getClass().getResourceAsStream("/sql/init_db.sql");
+            String line;
+            StringBuilder buffer = new StringBuilder();
+            try (BufferedReader read = new BufferedReader(new InputStreamReader(file))) {
+                while ((line = read.readLine()) != null) {
+                    buffer.append(line);
                 }
-                statement.executeBatch();
-                log.info("DatabaseManager setup.");
+                String[] state = buffer.toString().split("--Break");
+                try (Connection connection = connect();
+                        Statement statement = connection.createStatement()) {
+                    for (String single : state) {
+                        statement.executeUpdate(single);
+                    }
+                }
             }
         } catch (Exception e) {
-            log.fatal(e);
+            e.printStackTrace();
         } finally {
             Utils.closeConn(conn);
         }

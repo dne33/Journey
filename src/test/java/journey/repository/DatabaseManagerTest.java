@@ -17,7 +17,7 @@ class DatabaseManagerTest {
 
     @Test
     void connecting() throws SQLException {
-        databaseManager = DatabaseManager.getInstance();
+        databaseManager = DatabaseManager.initialiseWithUrl("/test.db");
         Connection conn = databaseManager.connect();
         assertNotNull(conn);
         assertNotNull(conn.getMetaData());
