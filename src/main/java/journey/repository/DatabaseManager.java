@@ -1,6 +1,6 @@
 package journey.repository;
 
-import java.io.File;
+import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -112,26 +112,37 @@ public final class DatabaseManager {
      * Sets up the database if not yet set up.
      */
     public void setup() {
+        InputStream is = getClass().getResourceAsStream("/sql/init_db.sql");
+        executeSQLScript(is);
+    }
 
-        // Create a new table.
-        // Note: Order of stations in a journey is done by a 'order' column.
-        Connection conn = null;
-        try {
-            String setupSQL = Files.readString(Path.of("src/main/resources/sql/init_db.sql"));
-            String[] statements = setupSQL.split("--Break");
-            conn = connect();
-            assert (conn != null);
-            try (Statement statement = conn.createStatement()) {
-                for (String line : statements) {
-                    statement.addBatch(line);
-                }
-                statement.executeBatch();
-                log.info("DatabaseManager setup.");
+    /**
+     * Reads and executes all statements within the sql file provided
+     * Note that each statement must be separated by '--Break' this is not a desired limitation but allows for a much
+     * wider range of statement types.
+     * @param sqlFile input stream of file containing sql statements for execution (separated by --Break)
+     */
+    private void executeSQLScript(InputStream sqlFile) {
+        String s;
+        StringBuffer sb = new StringBuffer();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(sqlFile))) {
+            while((s=br.readLine()) != null) {
+                sb.append(s);
             }
-        } catch (Exception e) {
-            log.fatal(e);
-        } finally {
-            Utils.closeConn(conn);
+
+            String[] individualStatements = sb.toString().split("--Break");
+            try (Connection conn = this.connect();
+                 Statement statement = conn.createStatement()) {
+                for (String singleStatement : individualStatements) {
+                    statement.executeUpdate(singleStatement);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            log.error("Error could not find specified database initialisation file", e);
+        } catch (IOException e) {
+            log.error("Error working with database initialisation file", e);
+        } catch (SQLException e) {
+            log.error("Error executing sql statements in database initialisation file", e);
         }
     }
 }

@@ -190,7 +190,8 @@
             </configurationParameters>
           </properties>
             <includes>
-                <include>**/*Test*.java</include>
+                <include>**/*Test.java</include>
+                <include>**/*TestFX.java</include>
             </includes>
         </configuration>
       </plugin>
